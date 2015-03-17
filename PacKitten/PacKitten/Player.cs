@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +16,8 @@ namespace PacKitten
     public class Player : Sprite
     {
         Game1 myGame;
+		public Vector2 GridPosition;
+		public Vector2 PositionCenter;
 
         public Player(Vector2 position, Color color, List<AnimationSet> animationSetList, Game1 myGame)
             : base(position, color, animationSetList)
@@ -29,7 +31,119 @@ namespace PacKitten
 
         public override void Update(GameTime gameTime)
         {
-            Position += Direction * Speed;
+            if (Direction.Y == -1)
+            {
+                if ((int)((Position.Y - Speed) / 30) < (int)(Position.Y / 30))
+                {
+                    Position.Y -= Position.Y % 30;
+                }
+                if (Position.Y % 30 == 0 && Position.Y > 0)
+                {
+					if (myGame.map[(int)(Position.Y / 30 - 1)][(int)(Position.X / 30)] != '.')
+                    {
+                        Direction.Y = 0;
+                    }
+                }
+            }
+            if (Direction.Y == 1)
+            {
+                if ((int)((Position.Y - Speed) / 30) > (int)(Position.Y / 30))
+                {
+                    Position.Y += Position.Y % 30;
+					Direction.Y = 0;
+                }
+                if (Position.Y % 30 == 0 && Position.Y < 450)
+                {
+					if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] != '.')
+                    {
+                        Direction.Y = 0;
+                    }
+                }
+            }
+            if (Direction.X == -1)
+            {
+                if ((int)((Position.X - Speed) / 30) < (int)(Position.X / 30))
+                {
+                    Position.X -= Position.X % 30;
+                }
+                if (Position.X % 30 == 0 && Position.X > 0)
+                {
+                    if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] != '.')
+                    {
+                        Direction.X = 0;
+                    }
+                }
+            }
+            if (Direction.X == 1)
+            {
+                if ((int)((Position.X - Speed) / 30) > (int)(Position.X / 30))
+                {
+					Position.X += Position.X % 30;
+					Direction.X = 0;
+                }
+                if (Position.X % 30 == 0 && Position.X < 540)
+                {
+					if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 + 1)] != '.')
+                    {
+                        Direction.X = 0;
+                    }
+                }
+			}
+
+			if (myGame.keyboardState.IsKeyDown(Keys.W))
+			{
+				if (Position.X % 30 == 0 && Position.Y % 30 == 0 && Position.Y > 0)
+				{
+					if (myGame.map[(int)(Position.Y / 30 - 1)][(int)(Position.X / 30)] == '.')
+					{
+						//Rotation = 270 * (float)Math.PI / 180;
+						Direction.Y = -1;
+						Direction.X = 0;
+						FlipSprite(true, Axis.Y);
+					}
+				}
+			}
+			if (myGame.keyboardState.IsKeyDown(Keys.S))
+			{
+				if (Position.X % 30 == 0 && Position.Y % 30 == 0 && Position.Y < 450)
+				{
+					if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] == '.')
+					{
+						Rotation = 90 * (float)Math.PI / 180;
+						Direction.Y = 1;
+						Direction.X = 0;
+						FlipSprite();
+					}
+				}
+			}
+			if (myGame.keyboardState.IsKeyDown(Keys.A))
+			{
+				if (Position.Y % 30 == 0 && Position.X % 30 == 0 && Position.X > 0)
+				{
+					if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] == '.')
+					{
+						//Rotation = 180 * (float)Math.PI / 180;
+						Direction.X = -1;
+						Direction.Y = 0;
+						FlipSprite(true, Axis.X);
+					}
+				}
+			}
+			if (myGame.keyboardState.IsKeyDown(Keys.D))
+			{
+				if (Position.Y % 30 == 0 && Position.X % 30 == 0 && Position.X < 540)
+				{
+					if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 + 1)] == '.')
+					{
+						//Rotation = 0 * (float)Math.PI / 180;
+						Direction.X = 1;
+						Direction.Y = 0;
+						FlipSprite();
+					}
+				}
+			}
+
+			Position += (Direction * Speed);
 
             if (Position.X < 0)
             {
@@ -49,118 +163,14 @@ namespace PacKitten
             if (Position.Y > 450)
             {
                 Position.Y = 450;
-                Direction.X = 0;
+                Direction.Y = 0;
             }
 
-            if (myGame.keyboardState.IsKeyDown(Keys.W))
-            {
-                if (Position.X % 30 == 0 && Position.Y % 30 == 0 && Position.Y > 0)
-                {
-                    if (myGame.map[(int)(Position.Y / 30 - 1)][(int)(Position.X / 30)] == '.')
-                    {
-                        Rotation = 270 * (float)Math.PI / 180;
-                        Direction.Y = -1;
-                        Direction.X = 0;
-                    }
-                }
-            }
-            if (myGame.keyboardState.IsKeyDown(Keys.A))
-            {
-                if (Position.X % 30 == 0 && Position.Y % 30 == 0 && Position.X > 0)
-                {
-                    if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] == '.')
-                    {
-                        Rotation = 180 * (float)Math.PI / 180;
-                        Direction.X = -1;
-                        Direction.Y = 0;
-                    }
-                }
-            }
-            if (myGame.keyboardState.IsKeyDown(Keys.S))
-            {
-                if (Position.X % 30 == 0 && Position.Y % 30 == 0 && Position.Y < 540)
-                {
-                    if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] == '.')
-                    {
-                        Rotation = 90 * (float)Math.PI / 180;
-                        Direction.Y = 1;
-                        Direction.X = 0;
-                    }
-                }
-            }
-            if (myGame.keyboardState.IsKeyDown(Keys.D))
-            {
-                if (Position.X % 30 == 0 && Position.Y % 30 == 0 && Position.X < 450)
-                {
-                    if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 + 1)] == '.')
-                    {
-                        Rotation = 0 * (float)Math.PI / 180;
-                        Direction.X = 1;
-                        Direction.Y = 0;
-                    }
-                }
-            }
+			GridPosition = new Vector2((int)(Position.X / 30), (int)(Position.Y / 30));
 
-            if (Direction.Y == -1)
-            {
-                if ((int)((Position.Y - Speed) / 3) < (int)(Position.Y / 30))
-                {
-                    Position.Y -= Position.Y % 30;
-                }
-                if (Position.Y % 30 == 0 && Position.Y > 0)
-                {
-                    if (myGame.map[(int)(Position.Y / 30 - 1)][(int)(Position.X / 30)] != '.')
-                    {
-                        Direction.Y = 0;
-                    }
-                }
-            }
-            if (Direction.Y == 1)
-            {
-                if ((int)((Position.Y - Speed) / 3) > (int)(Position.Y / 30))
-                {
-                    Position.Y += Position.Y % 30;
-                    Direction.Y = 0;
-                }
-                if (Position.Y % 30 == 0 && Position.Y < 450)
-                {
-                    if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] != '.')
-                    {
-                        Direction.Y = 0;
-                    }
-                }
-            }
-            if (Direction.X == -1)
-            {
-                if ((int)((Position.X - Speed) / 3) < (int)(Position.X / 30))
-                {
-                    Position.X -= Position.X % 30;
-                }
-                if (Position.X % 30 == 0 && Position.X > 0)
-                {
-                    if (myGame.map[(int)(Position.X / 30)][(int)(Position.X / 30 - 1)] != '.')
-                    {
-                        Direction.X = 0;
-                    }
-                }
-            }
-            if (Direction.X == 1)
-            {
-                if ((int)((Position.X - Speed) / 3) > (int)(Position.X / 30))
-                {
-                    Position.X += Position.Y % 30;
-                    Direction.X = 0;
-                }
-                if (Position.X % 30 == 0 && Position.Y < 540)
-                {
-                    if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] != '.')
-                    {
-                        Direction.X = 0;
-                    }
-                }
-            }
+			base.Update(gameTime);
 
-            base.Update(gameTime);
+			PositionCenter = Position + RotationCenter;
         }
 
         /// <summary>

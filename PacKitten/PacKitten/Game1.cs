@@ -26,8 +26,12 @@ namespace PacKitten
         public List<string> map;
 
         Texture2D playerTexture;
-        Player player;
+        public Player player;
         List<Sprite.AnimationSet> playerAnimationSetList;
+
+		Texture2D smallFoodTexture;
+		List<Food> food;
+		List<Sprite.AnimationSet> smallFoodAnimationSetList;
 
         public KeyboardState keyboardState, previousKeyboardState;
 
@@ -58,14 +62,25 @@ namespace PacKitten
             playerAnimationSetList = new List<Sprite.AnimationSet>();
             playerAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600));
 
+			smallFoodTexture = Content.Load<Texture2D>(@"images\pickups\pickup");
+			smallFoodAnimationSetList = new List<Sprite.AnimationSet>();
+			smallFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(10, 10), new Point(0, 0), new Point(0, 0), 1600));
+			food = new List<Food>();
+
             for (int i = 0; i < map.Count; i++)
             {
                 for (int j = 0; j < map[0].Length; j++)
                 {
                     if (map[i][j] == 'P')
-                    {
-                        player = new Player(new Vector2(j * 30, i * 30), Color.White, playerAnimationSetList, this);
+					{
+						player = new Player(new Vector2(j * 30, i * 30), Color.White, playerAnimationSetList, this);
+						map[i] = map[i].Substring(0, j) + '.' + map[i].Substring(j + 1);
                     }
+
+					if (map[i][j] == '.')
+					{
+						food.Add(new Food(new Vector2(j * 30 + 10, i * 30 + 10), Color.White, smallFoodAnimationSetList, this));
+					}
                     
                     tileList.Add(new Tiles(new Vector2(j * 30, i * 30), map[i][j].ToString(), Color.White, tileAnimationSetList, this));
                 }
@@ -112,11 +127,24 @@ namespace PacKitten
 
             player.Update(gameTime);
 
+			for (int i = 0; i < food.Count; i++)
+			{
+				if (food[i].DeleteMe)
+				{
+					food.RemoveAt(i);
+					i--;
+				}
+				else
+				{
+					food[i].Update(gameTime);
+				}
+			}
+
+			previousKeyboardState = keyboardState;
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-
-            previousKeyboardState = keyboardState;
         }
 
         /// <summary>
@@ -134,7 +162,12 @@ namespace PacKitten
                     t.Draw(gameTime, spriteBatch);
                 }
 
-                player.Draw(gameTime, spriteBatch);
+				player.Draw(gameTime, spriteBatch);
+
+				foreach (Food f in food)
+				{
+					f.Draw(gameTime, spriteBatch);
+				}
             }
             spriteBatch.End();
 
@@ -148,11 +181,11 @@ namespace PacKitten
             List<string> tmpList = new List<string>();
             tmpList.Add("...................");
             tmpList.Add(".11111.1.1.1.11111.");
-            tmpList.Add(".1.....1.1.1.....1.");
+            tmpList.Add(".1P....1.1.1.....1.");
             tmpList.Add(".1.111.1.1.1.111.1.");
             tmpList.Add(".1.1...........1.1.");
             tmpList.Add(".1.1.1111.1111.1.1.");
-            tmpList.Add(".....1.......1P....");
+            tmpList.Add(".....1.......1.....");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
             tmpList.Add(".....1.......1.....");
