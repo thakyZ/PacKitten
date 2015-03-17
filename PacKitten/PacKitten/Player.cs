@@ -16,8 +16,9 @@ namespace PacKitten
     public class Player : Sprite
     {
         Game1 myGame;
-		public Vector2 GridPosition;
+		public Point GridPosition;
 		public Vector2 PositionCenter;
+		public bool Respawn;
 
         public Player(Vector2 position, Color color, List<AnimationSet> animationSetList, Game1 myGame)
             : base(position, color, animationSetList)
@@ -31,6 +32,26 @@ namespace PacKitten
 
         public override void Update(GameTime gameTime)
         {
+			if (Respawn)
+			{
+				Respawn = false;
+				switch (new Random().Next(4))
+				{
+					case 0:
+						Position = new Vector2(0, 0);
+						break;
+					case 1:
+						Position = new Vector2(540, 0);
+						break;
+					case 2:
+						Position = new Vector2(0, 450);
+						break;
+					case 3:
+						Position = new Vector2(540, 450);
+						break;
+				}
+			}
+
             if (Direction.Y == -1)
             {
                 if ((int)((Position.Y - Speed) / 30) < (int)(Position.Y / 30))
@@ -96,10 +117,11 @@ namespace PacKitten
 				{
 					if (myGame.map[(int)(Position.Y / 30 - 1)][(int)(Position.X / 30)] == '.')
 					{
-						//Rotation = 270 * (float)Math.PI / 180;
+						Rotation = -90 * (float)Math.PI / 180;
+						//Rotation = 0;
+						FlipSprite();
 						Direction.Y = -1;
 						Direction.X = 0;
-						FlipSprite(true, Axis.Y);
 					}
 				}
 			}
@@ -110,9 +132,9 @@ namespace PacKitten
 					if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] == '.')
 					{
 						Rotation = 90 * (float)Math.PI / 180;
+						FlipSprite();
 						Direction.Y = 1;
 						Direction.X = 0;
-						FlipSprite();
 					}
 				}
 			}
@@ -122,10 +144,10 @@ namespace PacKitten
 				{
 					if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] == '.')
 					{
-						//Rotation = 180 * (float)Math.PI / 180;
+						Rotation = 180 * (float)Math.PI / 180;
+						FlipSprite(true, Axis.X);
 						Direction.X = -1;
 						Direction.Y = 0;
-						FlipSprite(true, Axis.X);
 					}
 				}
 			}
@@ -136,9 +158,10 @@ namespace PacKitten
 					if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 + 1)] == '.')
 					{
 						//Rotation = 0 * (float)Math.PI / 180;
+						Rotation = 0;
+						FlipSprite();
 						Direction.X = 1;
 						Direction.Y = 0;
-						FlipSprite();
 					}
 				}
 			}
@@ -166,7 +189,7 @@ namespace PacKitten
                 Direction.Y = 0;
             }
 
-			GridPosition = new Vector2((int)(Position.X / 30), (int)(Position.Y / 30));
+			GridPosition = new Point((int)(Position.X / 30), (int)(Position.Y / 30));
 
 			base.Update(gameTime);
 

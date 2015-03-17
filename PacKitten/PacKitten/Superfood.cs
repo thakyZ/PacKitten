@@ -13,31 +13,22 @@ using VoidEngine;
 
 namespace PacKitten
 {
-	public class Food : Sprite
+	public class Superfood : Food
 	{
-		protected Game1 myGame;
-		public bool DeleteMe = false;
-
-		public Food(Vector2 position, Color color, List<AnimationSet> animationSetList, Game1 game)
-			: base(position, color, animationSetList)
+		public Superfood(Vector2 position, Color color, List<AnimationSet> animationSetList, Game1 myGame)
+			: base(position, color, animationSetList, myGame)
 		{
-			myGame = game;
-			SetAnimation("IDLE");
 		}
 
 		public override void Update(GameTime gameTime)
 		{
-			if (Collision.Magnitude(Position - myGame.player.PositionCenter) <= 20)
+			if (Collision.Magnitude(Position - myGame.player.PositionCenter) <= 18.5)
 			{
 				DeleteMe = true;
+				myGame.buffActive = 3000;
 			}
 
 			base.Update(gameTime);
-		}
-
-		public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-		{
-			base.Draw(gameTime, spriteBatch);
 		}
 	}
 }

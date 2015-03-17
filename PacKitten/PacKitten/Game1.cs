@@ -29,9 +29,19 @@ namespace PacKitten
         public Player player;
         List<Sprite.AnimationSet> playerAnimationSetList;
 
+		Texture2D enemyTexture;
+		public List<Enemy> enemies;
+		List<Sprite.AnimationSet> enemyAnimationSetList;
+
+		public int buffActive = 0;
+
 		Texture2D smallFoodTexture;
 		List<Food> food;
 		List<Sprite.AnimationSet> smallFoodAnimationSetList;
+
+		Texture2D superFoodTexture;
+		List<Superfood> superFood;
+		List<Sprite.AnimationSet> superFoodAnimationSetList;
 
         public KeyboardState keyboardState, previousKeyboardState;
 
@@ -62,10 +72,20 @@ namespace PacKitten
             playerAnimationSetList = new List<Sprite.AnimationSet>();
             playerAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600));
 
+			enemyTexture = Content.Load<Texture2D>(@"images\enemies\enemy");
+			enemyAnimationSetList = new List<Sprite.AnimationSet>();
+			enemyAnimationSetList.Add(new Sprite.AnimationSet("IDLE", enemyTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600));
+			enemies = new List<Enemy>();
+
 			smallFoodTexture = Content.Load<Texture2D>(@"images\pickups\pickup");
 			smallFoodAnimationSetList = new List<Sprite.AnimationSet>();
 			smallFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(10, 10), new Point(0, 0), new Point(0, 0), 1600));
 			food = new List<Food>();
+
+			superFoodTexture = Content.Load<Texture2D>(@"images\pickups\superpickup");
+			superFoodAnimationSetList = new List<Sprite.AnimationSet>();
+			superFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", superFoodTexture, new Point(7, 7), new Point(0, 0), new Point(0, 0), 1600));
+			superFood = new List<Superfood>();
 
             for (int i = 0; i < map.Count; i++)
             {
@@ -81,7 +101,19 @@ namespace PacKitten
 					{
 						food.Add(new Food(new Vector2(j * 30 + 10, i * 30 + 10), Color.White, smallFoodAnimationSetList, this));
 					}
-                    
+
+					if (map[i][j] == 'S')
+					{
+						superFood.Add(new Superfood(new Vector2(j * 30 + 5, i * 30 + 5), Color.White, superFoodAnimationSetList, this));
+						map[i] = map[i].Substring(0, j) + '.' + map[i].Substring(j + 1);
+					}
+
+					if (map[i][j] == 'E')
+					{
+						enemies.Add(new Enemy(new Vector2(j * 30, i * 30), Color.White, enemyAnimationSetList, this));
+						map[i] = map[i].Substring(0, j) + '.' + map[i].Substring(j + 1);
+					}
+
                     tileList.Add(new Tiles(new Vector2(j * 30, i * 30), map[i][j].ToString(), Color.White, tileAnimationSetList, this));
                 }
             }
@@ -139,6 +171,19 @@ namespace PacKitten
 					food[i].Update(gameTime);
 				}
 			}
+			if (buffActive > 0)
+			{
+				buffActive -= gameTime.ElapsedGameTime.Milliseconds;
+				if (buffActive <= 0)
+				{
+					buffActive = 0;
+				}
+			}
+
+			foreach (Enemy e in enemies)
+			{
+				e.Update(gameTime);
+			}
 
 			previousKeyboardState = keyboardState;
 
@@ -168,6 +213,11 @@ namespace PacKitten
 				{
 					f.Draw(gameTime, spriteBatch);
 				}
+
+				foreach (Enemy e in enemies)
+				{
+					e.Draw(gameTime, spriteBatch);
+				}
             }
             spriteBatch.End();
 
@@ -179,22 +229,22 @@ namespace PacKitten
         protected List<string> MapGen()
         {
             List<string> tmpList = new List<string>();
-            tmpList.Add("...................");
+            tmpList.Add("S.................S");
             tmpList.Add(".11111.1.1.1.11111.");
             tmpList.Add(".1P....1.1.1.....1.");
             tmpList.Add(".1.111.1.1.1.111.1.");
             tmpList.Add(".1.1...........1.1.");
             tmpList.Add(".1.1.1111.1111.1.1.");
-            tmpList.Add(".....1.......1.....");
+            tmpList.Add(".....1E.....E1.....");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
-            tmpList.Add(".....1.......1.....");
+            tmpList.Add(".....1...E...1.....");
             tmpList.Add(".1.1.1111.1111.1.1.");
             tmpList.Add(".1.1...........1.1.");
             tmpList.Add(".1.111.1.1.1.111.1.");
             tmpList.Add(".1.....1.1.1.....1.");
             tmpList.Add(".11111.1.1.1.11111.");
-            tmpList.Add("...................");
+            tmpList.Add("S.................S");
             return tmpList;
         }
     }
