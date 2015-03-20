@@ -61,19 +61,19 @@ namespace PacKitten
 					if (Direction.Y == 1)
 					{
 						Rotation = 90 * (float)Math.PI / 180;
-						FlipSprite();
-						if ((int)((Position.Y - Speed) / 30) < (int)(Position.Y / 30))
-						{
-							Position.Y += Position.Y % 30;
-							Direction.Y = 0;
-						}
-						if (Position.Y % 30 == 0 && Position.Y > 450)
-						{
-							if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] != '.')
-							{
-								Direction.Y = 0;
-							}
-						}
+                        FlipSprite();
+                        if ((int)((Position.X - Speed) / 30) < (int)(Position.X / 30))
+                        {
+                            Position.X -= Position.X % 30;
+                            Direction.X = 0;
+                        }
+                        if (Position.X % 30 == 0 && Position.X > 0)
+                        {
+                            if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] != '.')
+                            {
+                                Direction.X = 0;
+                            }
+                        }
 					}
 					if (Direction.X == -1)
 					{

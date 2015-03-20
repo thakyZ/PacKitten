@@ -84,7 +84,7 @@ namespace PacKitten
 
 			superFoodTexture = Content.Load<Texture2D>(@"images\pickups\superpickup");
 			superFoodAnimationSetList = new List<Sprite.AnimationSet>();
-			superFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", superFoodTexture, new Point(7, 7), new Point(0, 0), new Point(0, 0), 1600));
+			superFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", superFoodTexture, new Point(20, 20), new Point(0, 0), new Point(0, 0), 1600));
 			superFood = new List<Superfood>();
 
             for (int i = 0; i < map.Count; i++)
@@ -170,7 +170,20 @@ namespace PacKitten
 				{
 					food[i].Update(gameTime);
 				}
-			}
+            }
+
+            for (int i = 0; i < superFood.Count; i++)
+            {
+                if (superFood[i].DeleteMe)
+                {
+                    superFood.RemoveAt(i);
+                    i--;
+                }
+                else
+                {
+                    superFood[i].Update(gameTime);
+                }
+            }
 			if (buffActive > 0)
 			{
 				buffActive -= gameTime.ElapsedGameTime.Milliseconds;
@@ -218,6 +231,11 @@ namespace PacKitten
 				{
 					e.Draw(gameTime, spriteBatch);
 				}
+
+                foreach (Superfood s in superFood)
+                {
+                    s.Draw(gameTime, spriteBatch);
+                }
             }
             spriteBatch.End();
 
