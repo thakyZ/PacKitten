@@ -44,7 +44,7 @@ namespace PacKitten
 					{
 						Rotation = -90 * (float)Math.PI / 180;
 						//Rotation = 0;
-						FlipSprite();
+						FlipSprite(Axis.NONE);
 						if ((int)((Position.Y - Speed) / 30) < (int)(Position.Y / 30))
 						{
 							Position.Y -= Position.Y % 30;
@@ -61,7 +61,7 @@ namespace PacKitten
 					if (Direction.Y == 1)
 					{
 						Rotation = 90 * (float)Math.PI / 180;
-                        FlipSprite();
+                        FlipSprite(Axis.NONE);
                         if ((int)((Position.X - Speed) / 30) < (int)(Position.X / 30))
                         {
                             Position.X -= Position.X % 30;
@@ -78,7 +78,7 @@ namespace PacKitten
 					if (Direction.X == -1)
 					{
 						Rotation = 180 * (float)Math.PI / 180;
-						FlipSprite(true, Axis.X);
+						FlipSprite(Axis.X);
 						if ((int)((Position.X - Speed) / 30) < (int)(Position.X / 30))
 						{
 							Position.X -= Position.X % 30;
@@ -96,7 +96,7 @@ namespace PacKitten
 					{
 						//Rotation = 0 * (float)Math.PI / 180;
 						Rotation = 0;
-						FlipSprite();
+						FlipSprite(Axis.NONE);
 						if ((int)((Position.X - Speed) / 30) < (int)(Position.X / 30))
 						{
 							Position.X += Position.X % 30;

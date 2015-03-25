@@ -119,7 +119,7 @@ namespace PacKitten
 					{
 						Rotation = -90 * (float)Math.PI / 180;
 						//Rotation = 0;
-						FlipSprite();
+						FlipSprite(Axis.NONE);
 						Direction.Y = -1;
 						Direction.X = 0;
 					}
@@ -132,7 +132,7 @@ namespace PacKitten
 					if (myGame.map[(int)(Position.Y / 30 + 1)][(int)(Position.X / 30)] == '.')
 					{
 						Rotation = 90 * (float)Math.PI / 180;
-						FlipSprite();
+						FlipSprite(Axis.NONE);
 						Direction.Y = 1;
 						Direction.X = 0;
 					}
@@ -145,7 +145,7 @@ namespace PacKitten
 					if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] == '.')
 					{
 						Rotation = 180 * (float)Math.PI / 180;
-						FlipSprite(true, Axis.X);
+						FlipSprite(Axis.X);
 						Direction.X = -1;
 						Direction.Y = 0;
 					}
@@ -159,7 +159,7 @@ namespace PacKitten
 					{
 						//Rotation = 0 * (float)Math.PI / 180;
 						Rotation = 0;
-						FlipSprite();
+						FlipSprite(Axis.NONE);
 						Direction.X = 1;
 						Direction.Y = 0;
 					}
