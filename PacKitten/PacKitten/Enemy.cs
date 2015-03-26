@@ -13,17 +13,20 @@ namespace PacKitten
 	{
 		Game1 myGame;
 
+		public bool Dead = false;
+
 		public Enemy(Vector2 position, Color color, List<AnimationSet> animationSetList, Game1 myGame) : base(position, color, animationSetList)
 		{
 			this.myGame = myGame;
 			SetAnimation("IDLE");
 			RotationCenter = new Vector2(15, 15);
 			Speed = 1.5f;
+			Offset = new Vector2(-15, -15);
 		}
 
 		public override void Update(GameTime gameTime)
 		{
-			if(myGame.buffActive == 0)
+			if (myGame.buffActive == 0 && !Dead)
 			{
 				if (Collision.Magnitude(myGame.player.PositionCenter - (Position + RotationCenter)) <= 30)
 				{
@@ -61,19 +64,19 @@ namespace PacKitten
 					if (Direction.Y == 1)
 					{
 						Rotation = 90 * (float)Math.PI / 180;
-                        FlipSprite(Axis.NONE);
-                        if ((int)((Position.X - Speed) / 30) < (int)(Position.X / 30))
-                        {
-                            Position.X -= Position.X % 30;
-                            Direction.X = 0;
-                        }
-                        if (Position.X % 30 == 0 && Position.X > 0)
-                        {
-                            if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] != '.')
-                            {
-                                Direction.X = 0;
-                            }
-                        }
+						FlipSprite(Axis.NONE);
+						if ((int)((Position.X - Speed) / 30) < (int)(Position.X / 30))
+						{
+							Position.X -= Position.X % 30;
+							Direction.X = 0;
+						}
+						if (Position.X % 30 == 0 && Position.X > 0)
+						{
+							if (myGame.map[(int)(Position.Y / 30)][(int)(Position.X / 30 - 1)] != '.')
+							{
+								Direction.X = 0;
+							}
+						}
 					}
 					if (Direction.X == -1)
 					{
@@ -134,6 +137,18 @@ namespace PacKitten
 					Position.Y = 450;
 					Direction.Y = 0;
 				}
+			}
+			else
+			{
+				if (Collision.Magnitude(myGame.player.PositionCenter - (Position + RotationCenter)) <= 30)
+				{
+					Dead = true;
+				}
+			}
+
+			if (Dead)
+			{
+				_Color = Color.Red;
 			}
 
 			base.Update(gameTime);

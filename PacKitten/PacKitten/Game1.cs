@@ -43,6 +43,14 @@ namespace PacKitten
 		List<Superfood> superFood;
 		List<Sprite.AnimationSet> superFoodAnimationSetList;
 
+		SpriteFont segoeuimonodebug;
+		Label debugLabel;
+		string[] debugStrings = new string[10];
+
+		Texture2D rectange;
+
+		public int score;
+
         public KeyboardState keyboardState, previousKeyboardState;
 
         public Game1()
@@ -86,6 +94,9 @@ namespace PacKitten
 			superFoodAnimationSetList = new List<Sprite.AnimationSet>();
 			superFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", superFoodTexture, new Point(20, 20), new Point(0, 0), new Point(0, 0), 1600));
 			superFood = new List<Superfood>();
+
+			segoeuimonodebug = Content.Load<SpriteFont>(@"fonts\segoeuimonodebug");
+			debugLabel = new Label(new Vector2(585, 15), segoeuimonodebug, 1.0f, Color.Black, "");
 
             for (int i = 0; i < map.Count; i++)
             {
@@ -176,6 +187,7 @@ namespace PacKitten
             {
                 if (superFood[i].DeleteMe)
                 {
+					buffActive = 3000;
                     superFood.RemoveAt(i);
                     i--;
                 }
@@ -201,6 +213,20 @@ namespace PacKitten
 			previousKeyboardState = keyboardState;
 
             // TODO: Add your update logic here
+
+			debugLabel.Update(gameTime, debugStrings[0] + "\n" +
+										debugStrings[1] + "\n" +
+										debugStrings[2] + "\n" +
+										debugStrings[3] + "\n" +
+										debugStrings[4] + "\n" +
+										debugStrings[5] + "\n" +
+										debugStrings[6] + "\n" +
+										debugStrings[7] + "\n" +
+										debugStrings[8] + "\n" +
+										debugStrings[9]);
+
+			debugStrings[0] = "buffActive=" + buffActive;
+			debugStrings[1] = "score=" + score;
 
             base.Update(gameTime);
         }
@@ -236,6 +262,10 @@ namespace PacKitten
                 {
                     s.Draw(gameTime, spriteBatch);
                 }
+
+				spriteBatch.Draw(rectange, new Rectangle(570, 0, 
+
+				debugLabel.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
 
@@ -251,14 +281,14 @@ namespace PacKitten
             tmpList.Add(".11111.1.1.1.11111.");
             tmpList.Add(".1P....1.1.1.....1.");
             tmpList.Add(".1.111.1.1.1.111.1.");
-            tmpList.Add(".1.1...........1.1.");
+            tmpList.Add(".1.1S.........S1.1.");
             tmpList.Add(".1.1.1111.1111.1.1.");
             tmpList.Add(".....1E.....E1.....");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
             tmpList.Add(".....1...E...1.....");
             tmpList.Add(".1.1.1111.1111.1.1.");
-            tmpList.Add(".1.1...........1.1.");
+            tmpList.Add(".1.1S.........S1.1.");
             tmpList.Add(".1.111.1.1.1.111.1.");
             tmpList.Add(".1.....1.1.1.....1.");
             tmpList.Add(".11111.1.1.1.11111.");

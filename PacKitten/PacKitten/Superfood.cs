@@ -22,7 +22,7 @@ namespace PacKitten
 
 		public override void Update(GameTime gameTime)
 		{
-			if (Collision.Magnitude(Position - myGame.player.PositionCenter) <= 18.5)
+			if (Collision.Magnitude(Position - myGame.player.PositionCenter) <= 5)
 			{
 				DeleteMe = true;
 				myGame.buffActive = 3000;

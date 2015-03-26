@@ -105,6 +105,10 @@
     <Reference Include="System.Net">
       <Private>False</Private>
     </Reference>
+    <Reference Include="VoidEngine, Version=0.0.1.2, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\VoidEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enemy.cs" />
@@ -121,10 +125,6 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\VoidEngine\VoidEngine\VoidEngine.csproj">
-      <Project>{CF9853A6-A986-4FAD-A2E6-6FE5307EDF2F}</Project>
-      <Name>VoidEngine</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PacKittenContent\PacKittenContent.contentproj">
       <Name>PacKittenContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

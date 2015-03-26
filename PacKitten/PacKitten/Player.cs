@@ -28,6 +28,7 @@ namespace PacKitten
             Speed = 3;
             Direction = Vector2.Zero;
             SetAnimation("IDLE");
+			Offset = new Vector2(-15, -15);
         }
 
         public override void Update(GameTime gameTime)
