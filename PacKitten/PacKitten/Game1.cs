@@ -33,6 +33,12 @@ namespace PacKitten
 		public List<Enemy> enemies;
 		List<Sprite.AnimationSet> enemyAnimationSetList;
 
+		Texture2D areaTexture;
+
+		public List<int> Timer = new List<int>();
+
+		List<bool> updateScore = new List<bool>();
+
 		public int buffActive = 0;
 
 		Texture2D smallFoodTexture;
@@ -47,7 +53,7 @@ namespace PacKitten
 		Label debugLabel;
 		string[] debugStrings = new string[10];
 
-		Texture2D rectange;
+		List<Label> ScoreAddition;
 
 		public int score;
 
@@ -71,32 +77,35 @@ namespace PacKitten
 
             tileTexture = Content.Load<Texture2D>(@"images\other\tiles");
             tileAnimationSetList = new List<Sprite.AnimationSet>();
-            tileAnimationSetList.Add(new Sprite.AnimationSet(".", tileTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600));
-            tileAnimationSetList.Add(new Sprite.AnimationSet("1", tileTexture, new Point(30, 30), new Point(0, 0), new Point(30, 0), 1600));
+            tileAnimationSetList.Add(new Sprite.AnimationSet(".", tileTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600, false));
+            tileAnimationSetList.Add(new Sprite.AnimationSet("1", tileTexture, new Point(30, 30), new Point(0, 0), new Point(30, 0), 1600, false));
             tileList = new List<Tiles>();
             map = MapGen();
 
+			areaTexture = Content.Load<Texture2D>(@"images\gui\area");
+
             playerTexture = Content.Load<Texture2D>(@"images\player\player");
             playerAnimationSetList = new List<Sprite.AnimationSet>();
-            playerAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600));
+            playerAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600, false));
 
 			enemyTexture = Content.Load<Texture2D>(@"images\enemies\enemy");
 			enemyAnimationSetList = new List<Sprite.AnimationSet>();
-			enemyAnimationSetList.Add(new Sprite.AnimationSet("IDLE", enemyTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600));
+			enemyAnimationSetList.Add(new Sprite.AnimationSet("IDLE", enemyTexture, new Point(30, 30), new Point(0, 0), new Point(0, 0), 1600, false));
 			enemies = new List<Enemy>();
 
 			smallFoodTexture = Content.Load<Texture2D>(@"images\pickups\pickup");
 			smallFoodAnimationSetList = new List<Sprite.AnimationSet>();
-			smallFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(10, 10), new Point(0, 0), new Point(0, 0), 1600));
+			smallFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", playerTexture, new Point(10, 10), new Point(0, 0), new Point(0, 0), 1600, false));
 			food = new List<Food>();
 
 			superFoodTexture = Content.Load<Texture2D>(@"images\pickups\superpickup");
 			superFoodAnimationSetList = new List<Sprite.AnimationSet>();
-			superFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", superFoodTexture, new Point(20, 20), new Point(0, 0), new Point(0, 0), 1600));
+			superFoodAnimationSetList.Add(new Sprite.AnimationSet("IDLE", superFoodTexture, new Point(20, 20), new Point(0, 0), new Point(0, 0), 1600, false));
 			superFood = new List<Superfood>();
 
-			segoeuimonodebug = Content.Load<SpriteFont>(@"fonts\segoeuimonodebug");
-			debugLabel = new Label(new Vector2(585, 15), segoeuimonodebug, 1.0f, Color.Black, "");
+			segoeuimonodebug = Content.Load<SpriteFont>(@"fonts\segoeuibold");
+			debugLabel = new Label(new Vector2(600, 15), segoeuimonodebug, 1.0f, Color.Black, "");
+			ScoreAddition = new List<Label>();
 
             for (int i = 0; i < map.Count; i++)
             {
@@ -159,7 +168,8 @@ namespace PacKitten
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-        {
+		{
+			UpdateScore(gameTime);
             keyboardState = Keyboard.GetState();
 
             // Allows the game to exit
@@ -210,11 +220,12 @@ namespace PacKitten
 				e.Update(gameTime);
 			}
 
+
 			previousKeyboardState = keyboardState;
 
             // TODO: Add your update logic here
 
-			debugLabel.Update(gameTime, debugStrings[0] + "\n" +
+			debugLabel.text = debugStrings[0];/* + "\n" +
 										debugStrings[1] + "\n" +
 										debugStrings[2] + "\n" +
 										debugStrings[3] + "\n" +
@@ -223,10 +234,31 @@ namespace PacKitten
 										debugStrings[6] + "\n" +
 										debugStrings[7] + "\n" +
 										debugStrings[8] + "\n" +
-										debugStrings[9]);
+										debugStrings[9]);*/
 
-			debugStrings[0] = "buffActive=" + buffActive;
-			debugStrings[1] = "score=" + score;
+			debugLabel.Update(gameTime);
+
+			debugStrings[1] = "buffActive=" + buffActive;
+			debugStrings[0] = "Score = " + score;
+			debugStrings[2] = "timer=" + enemies[0].timer;
+			if (Alpha.Count > 0)
+			{
+				debugStrings[3] = "Alpha=" + Alpha[0] + " Count=" + Alpha.Count;
+			}
+			if (updateScore.Count > 0)
+			{
+				debugStrings[4] = "updateScore=" + updateScore[0] + " Count=" + updateScore.Count;
+			}
+			if (Timer.Count > 0)
+			{
+				debugStrings[5] = "Timer=" + Timer[0] + " Count=" + Timer.Count;
+			}
+			if (ScoreAddition.Count > 0)
+			{
+				debugStrings[6] = "Color=(" + ScoreAddition[0].color.R + "," + ScoreAddition[0].color.G + "," + ScoreAddition[0].color.B + "," + ScoreAddition[0].color.A + ")";
+				debugStrings[7] = "Text=" + ScoreAddition[0].text + " Count=" + ScoreAddition.Count;
+				debugStrings[8] = "Y=" + ScoreAddition[0].position.Y;
+			}
 
             base.Update(gameTime);
         }
@@ -263,9 +295,14 @@ namespace PacKitten
                     s.Draw(gameTime, spriteBatch);
                 }
 
-				spriteBatch.Draw(rectange, new Rectangle(570, 0, 
+				spriteBatch.Draw(areaTexture, new Vector2(570, 0), Color.White);
 
 				debugLabel.Draw(gameTime, spriteBatch);
+
+				foreach (Label a in ScoreAddition)
+				{
+					a.Draw(gameTime, spriteBatch);
+				}
             }
             spriteBatch.End();
 
@@ -283,10 +320,10 @@ namespace PacKitten
             tmpList.Add(".1.111.1.1.1.111.1.");
             tmpList.Add(".1.1S.........S1.1.");
             tmpList.Add(".1.1.1111.1111.1.1.");
-            tmpList.Add(".....1E.....E1.....");
+            tmpList.Add(".....1E..E..E1.....");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
             tmpList.Add(".1.1.1.1.1.1.1.1.1.");
-            tmpList.Add(".....1...E...1.....");
+            tmpList.Add(".....1E..E..E1.....");
             tmpList.Add(".1.1.1111.1111.1.1.");
             tmpList.Add(".1.1S.........S1.1.");
             tmpList.Add(".1.111.1.1.1.111.1.");
@@ -295,5 +332,47 @@ namespace PacKitten
             tmpList.Add("S.................S");
             return tmpList;
         }
+
+		public List<int> Alpha = new List<int>();
+
+		public void AddScore(int scoreAddition)
+		{
+			score += scoreAddition;
+			//ScoreAddition.Add(new Label(new Vector2(600, 15), segoeuimonodebug, 1.0f, new Color(0, 0, 255, 255), scoreAddition.ToString()));
+			//Alpha.Add(255);
+			//Timer.Add(2000);
+		}
+
+		public void UpdateScore(GameTime gameTime)
+		{
+
+			foreach (int j in Timer)
+			{
+				foreach (int a in Alpha)
+				{
+					foreach (Label i in ScoreAddition)
+					{
+						i.position.Y -= (float)gameTime.ElapsedGameTime.Milliseconds;
+						Timer[Timer.IndexOf(j)] -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+
+						int test = Alpha.IndexOf(a);
+						Alpha[Alpha.IndexOf(a)] -= (int)(gameTime.ElapsedGameTime.TotalMilliseconds * 0.2f);
+
+						test = Alpha.IndexOf(a);
+						Alpha[Alpha.IndexOf(a) + 1] = (int)MathHelper.Clamp(a, 0, 255);
+
+						i.color = new Color(0, 0, 255, a);
+						if (j <= 0)
+						{
+							i.position = new Vector2(600, 15);
+							Timer.Remove(0);
+							Alpha.RemoveAt(0);
+							ScoreAddition.RemoveAt(0);
+						}
+					}
+				}
+			}
+		}
     }
 }

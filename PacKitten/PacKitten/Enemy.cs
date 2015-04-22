@@ -13,6 +13,11 @@ namespace PacKitten
 	{
 		Game1 myGame;
 
+		public int timer = 5000;
+
+		public Vector2 Direction;
+		public float Speed;
+
 		public bool Dead = false;
 
 		public Enemy(Vector2 position, Color color, List<AnimationSet> animationSetList, Game1 myGame) : base(position, color, animationSetList)
@@ -26,6 +31,32 @@ namespace PacKitten
 
 		public override void Update(GameTime gameTime)
 		{
+			if (Dead)
+			{
+				timer -= (int)gameTime.ElapsedGameTime.Milliseconds;
+
+				if (timer <= 0)
+				{
+					Dead = false;
+					switch (new Random().Next(4))
+					{
+						case 0:
+							Position = new Vector2(0, 0);
+							break;
+						case 1:
+							Position = new Vector2(540, 0);
+							break;
+						case 2:
+							Position = new Vector2(0, 450);
+							break;
+						case 3:
+							Position = new Vector2(540, 450);
+							break;
+					}
+					timer = 5000;
+					_Color = Color.White;
+				}
+			}
 			if (myGame.buffActive == 0 && !Dead)
 			{
 				if (Collision.Magnitude(myGame.player.PositionCenter - (Position + RotationCenter)) <= 30)
@@ -143,6 +174,7 @@ namespace PacKitten
 				if (Collision.Magnitude(myGame.player.PositionCenter - (Position + RotationCenter)) <= 30)
 				{
 					Dead = true;
+					myGame.AddScore(10);
 				}
 			}
 

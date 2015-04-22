@@ -26,6 +26,7 @@ namespace PacKitten
 			{
 				DeleteMe = true;
 				myGame.buffActive = 3000;
+				myGame.AddScore(5);
 			}
 
 			base.Update(gameTime);

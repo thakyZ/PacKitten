@@ -30,7 +30,7 @@ namespace PacKitten
 			if (Collision.Magnitude(Position - myGame.player.PositionCenter) <= 20)
 			{
 				DeleteMe = true;
-				myGame.score += 1;
+				myGame.AddScore(1);
 			}
 
 			base.Update(gameTime);

@@ -20,6 +20,9 @@ namespace PacKitten
 		public Vector2 PositionCenter;
 		public bool Respawn;
 
+		public Vector2 Direction;
+		public float Speed;
+
         public Player(Vector2 position, Color color, List<AnimationSet> animationSetList, Game1 myGame)
             : base(position, color, animationSetList)
         {
@@ -36,6 +39,7 @@ namespace PacKitten
 			if (Respawn)
 			{
 				Respawn = false;
+				_Color = Color.White;
 				switch (new Random().Next(4))
 				{
 					case 0:

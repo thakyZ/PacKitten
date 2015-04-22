@@ -23,7 +23,7 @@ namespace PacKitten
             this.myGame = myGame;
             if (hp == "P")
             {
-                hp = ".";
+                //hp = ".";
             }
             SetAnimation(hp);
         }
